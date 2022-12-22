@@ -9,6 +9,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/students", StudentController.index);
+router.get("/students/:id", StudentController.detail);
 router.post("/students", StudentController.store);
 router.put("/students/:id", StudentController.update);
 router.delete("/students/:id", StudentController.destroy);

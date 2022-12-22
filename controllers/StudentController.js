@@ -1,13 +1,11 @@
-// TODO 3: Import data students dari folder data/students.js
-// code here
+// import Model Student
+const Student = require("../models/Student");
 
-const students = require("../data/students");
-
-// Membuat Class StudentController
 class StudentController {
-  index(req, res) {
-    // TODO 4: Tampilkan data students
-    // code here
+  // menambahkan keyword async
+  async index(req, res) {
+    // memanggil method static all dengan async await.
+    const students = await Student.all();
     const data = {
       message: "Menampilkkan semua students",
       data: students,
@@ -16,48 +14,48 @@ class StudentController {
     res.json(data);
   }
 
-  store(req, res) {
-    const { name } = req.body;
-
-    // TODO 5: Tambahkan data students
-    // code here
-    let id = students.slice(-1)[0].id + 1;
-    students.push({ id, name });
+  async detail(req, res) {
+    const { id } = req.params;
+    const student = await Student.detail(id);
     const data = {
-      message: `Menambahkan data student: ${name}`,
-      data: students,
+      message: `Menampilkkan detail students dengan id ${id}`,
+      data: student,
     };
 
     res.json(data);
   }
 
-  update(req, res) {
-    const { id } = req.params;
-    const { name } = req.body;
-
-    // TODO 6: Update data students
-    // code here
-    let objIndex = students.findIndex((obj) => obj.id == id);
-    students[objIndex].name = name;
+  async store(req, res) {
+    const { name, nim, email, jurusan } = req.body;
+    await Student.create(name, nim, email, jurusan);
     const data = {
-      message: `Mengedit student id ${id}, nama ${name}`,
-      data: students,
+      message: "Menambahkan data student",
+      data: await Student.getLast(),
     };
 
     res.json(data);
   }
 
-  destroy(req, res) {
+  async update(req, res) {
+    const { id } = req.params;
+    const { nama } = req.body;
+
+    await Student.update(id, nama);
+    const data = {
+      message: `Mengedit student id ${id}, nama ${nama}`,
+      data: await Student.detail(id),
+    };
+
+    res.json(data);
+  }
+
+  async destroy(req, res) {
     const { id } = req.params;
 
-    // TODO 7: Hapus data students
-    // code here
-    let objIndex = students.findIndex((obj) => obj.id == id);
-    students.splice(objIndex, 1);
-
+    await Student.delete(id);
     const data = {
       message: `Menghapus student id ${id}`,
-      data: students,
+      data: await Student.all(),
     };
 
     res.json(data);
